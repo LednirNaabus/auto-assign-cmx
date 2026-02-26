@@ -1,5 +1,11 @@
 from fastapi import FastAPI, Form
 from typing import Optional
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s:%(message)s"
+)
 
 app = FastAPI()
 
@@ -23,5 +29,5 @@ async def echo(
         "tags": tags_list
     }
 
-    print(f"data: {data}")
+    logging.info(f"Data: {data}")
     return data
