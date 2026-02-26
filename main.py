@@ -1,24 +1,27 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import List, Union, Optional
+from fastapi import FastAPI, Form
+from typing import Optional
 
 app = FastAPI()
 
-class BodyResponse(BaseModel):
-    conv_code: str
-    agent_id: Optional[str] = None
-    department_id: Optional[str] = None
-    subject: Optional[str] = None
-    source: Optional[str] = None
-    tags: Union[List[str], str, None] = None
-
-@app.get("/")
-async def root():
-    return "Working"
-
 @app.post("/echo")
-async def echo(body: BodyResponse):
-    tags = body.tags
-    if isinstance(tags, str):
-        tags = [t.strip() for t in tags.split(",") if t.strip()]
-    return {**body.model_dump(), "tags": tags}
+async def echo(
+    conv_code: str = Form(...),
+    agent_id: Optional[str] = Form(None),
+    department_id: Optional[str] = Form(None),
+    subject: Optional[str] = Form(None),
+    source: Optional[str] = Form(None),
+    tags: Optional[str] = Form(None)
+):
+    tags_list = [t.strip() for t in (tags or "").split(",") if t.strip()]
+    data = {
+        "conv_code": conv_code,
+        "agent_id": agent_id,
+        "department_id": department_id,
+        "subject": subject,
+        "source": source,
+        "tags_raw": tags,
+        "tags": tags_list
+    }
+
+    print(f"data: {data}")
+    return data
