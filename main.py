@@ -6,6 +6,7 @@ app = FastAPI()
 
 class BodyResponse(BaseModel):
     conv_code: str
+    agent_id: Optional[str] = None
     department_id: Optional[str] = None
     subject: Optional[str] = None
     source: Optional[str] = None
